@@ -1,0 +1,117 @@
+class Participant:
+    def __init__(self, name, additional_info=""):
+        self.name = name
+        self.additional_info = additional_info
+        self.wins = 0
+        self.losses = 0
+        self.points = 0
+
+    def __str__(self):
+        return f"{self.name} (Очки: {self.points})"
+
+
+class Tournament:
+    def __init__(self):
+        self.participants = {}  # имя -> Participant
+
+    def register_participant(self, participant):
+        if participant.name in self.participants:
+            raise ValueError("Участник с таким именем уже зарегистрирован.")
+        self.participants[participant.name] = participant
+
+    def get_participant(self, name):
+        if name not in self.participants:
+            raise ValueError("Участник не найден.")
+        return self.participants[name]
+
+    def create_match(self, name1, name2):
+        if name1 not in self.participants:
+            raise ValueError("Участник 1 не найден.")
+        if name2 not in self.participants:
+            raise ValueError("Участник 2 не найден.")
+        if name1 == name2:
+            raise ValueError("Участник не может играть сам с собой.")
+
+    def record_result(self, name1, name2, winner):
+        participant_a = self.get_participant(name1)
+        participant_b = self.get_participant(name2)
+
+        if winner != name_a and winner != name2:
+            raise ValueError("Победитель должен быть одним из участников матча.")
+
+        participant_a.wins += 1
+        participant_b.wins += 1
+        participant_a.points += 3  # Система очков: 3 за победу
+        participant_b.points += 1  # Проигравший получает 0
+
+        print(f"Матч recorded: {name_a} vs {name_2}. Победитель: {winner}.")
+
+    def get_tournament_table(self):
+        return sorted(self.participants.values(), key=lambda x: (-x.points, x.wins))
+
+    def get_leader(self):
+        if not self.participants:
+            return None
+        leader = max(self.participants.values(), key=lambda x: (x.points, x.wins))
+        return leader
+
+    def get_statistics(self):
+        total_matches = sum(1 for _ in self.participants.values())
+        stats = "\n".join(f"{name}: {p.wins} побед, {p.losses} поражений, {p.points} очков" for name, p in self.participants.items())
+        return f"Статистика турнира:\n{stats}\пВсего матчей: {total_matches}"
+
+    def group_participants(self, group_name):
+        return [participant for participant in self.participants.values() if participant.additional_info.lower() == group_name.lower()]
+
+    def display_menu(self):
+        print("\n=== Консольное меню ===")
+        print("1. Зарегистрировать участника")
+        print("2. Создать матч")
+        print("3. Записать результат матча")
+        print("4. Просмотреть турнирную таблицу")
+        print("5. Найти участника")
+        print("6. Получить лидера турнира")
+        print("7. Получить статистику")
+        print("8. Разделить участников на группы")
+        print("9. Выход")
+
+    def run(self):
+        while True:
+            self.display_menu()
+            try:
+                choice = input("Введите номер действия: ").strip()
+                if choice == '1':
+                    self.register_participant(Participant(input("Введите имя участника: "), input("Введите дополнительную информацию:")))
+                elif choice == '2':
+                    self.create_match(input("Введите имя участника 1: "), input("Введите имя участника 2: "))
+                elif choice == '3':
+                    self.record_result(input("Введите имя победителя (1 или 2): "), input("Введите имя проигравшего: "), input("Победитель: "))
+                elif choice == '4':
+                    print(self.get_tournament_table())
+                elif choice == '5':
+                    print(self.get_leader())
+                elif choice == '6':
+                    group = input("Введите имя группы: ")
+                    grouped_participants = self.group_participants(group)
+                    if not grouped_participants:
+                        print("Группа не найдена.")
+                    else:
+                        print(self.get_tournament_table(grouped_participants))
+                elif choice == '7') {
+                        print(self.get_statistics())
+                elif choice == '8':
+                    group = input("Введите имя группы: ")
+                    grouped_participants = self.group_participants(group)
+                    if not grouped_participants:
+                        print("Группа не найдена.")
+                elif choice == '9':
+                    print("Выход из программы.")
+                    break
+                else:
+                    print("Неверный выбор. Попробуйте снова.")
+            except ValueError as e:
+                print(f"Ошибка: {e}")
+
+if __name__ == "__main__":
+    tournament = Tournament()
+    tournament.run()
